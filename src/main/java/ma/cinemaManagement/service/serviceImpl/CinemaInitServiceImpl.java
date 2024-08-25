@@ -1,0 +1,165 @@
+package ma.cinemaManagement.service.serviceImpl;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ma.cinemaManagement.repositories.*;
+import ma.cinemaManagement.service.ICinemaInitService;
+import ma.cinemaManagement.service.entities.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+
+@Service
+@AllArgsConstructor
+@Transactional
+@Slf4j
+public class CinemaInitServiceImpl implements ICinemaInitService {
+    private IVilleRepository iVilleRepository;
+    private ICinemaRepository iCinemaRepository;
+    private ISalleRepository iSalleRepository;
+    private IPlaceRepository iPlaceRepository;
+    private ISeanceRepository iSeanceRepository;
+    private ICategoryRepository iCategoryRepository;
+    private IFilmRepository iFilmRepository;
+    private IProjectionFilmRepository iProjectionFilmRepository;
+    private ITicketRepository iTicketRepository;
+
+    @Override
+    public void initVilles() {
+        log.debug("STARTING SAVA DATA");
+            Stream.of("Rabat","Casablanca","Marrakech","Tanger").forEach(nameVille->{
+            Ville ville =new Ville();
+            ville.setNameVille(nameVille);
+            iVilleRepository.save(ville);
+        });
+        log.debug("SAVE DATA SUCCESSFULLY");
+    }
+
+    @Override
+    public void initCinemas() {
+        iVilleRepository.findAll().forEach(ville->{
+            Stream.of("Megarama "+ville.getNameVille(),"Daoulize "+ville.getNameVille(),"Renaissance "+ville.getNameVille()).forEach(
+                    nameCinema->{
+                        Cinema cinema=new Cinema();
+                        cinema.setNameCinema(nameCinema);
+                        cinema.setNumberSalleCinema(3+(int)(Math.random()*7));
+                        cinema.setVille(ville);
+                        iCinemaRepository.save(cinema);
+                    });
+        });
+    }
+
+    @Override
+    public void initSalles() {
+        iCinemaRepository.findAll().forEach(cinema ->{
+            IntStream.range(0,cinema.getNumberSalleCinema()).forEach(i->{
+                        Salle salle = new Salle();
+                        salle.setNameSalle(" salle "+i+1);
+                        salle.setCinema(cinema);
+                        salle.setNumberPlaceSalle(15+(int)(Math.random()*20));
+                iSalleRepository.save(salle);
+                    }
+);
+        });
+    }
+
+    @Override
+    public void initPlaces() {
+        iSalleRepository.findAll().stream().forEach(salle->{
+            IntStream.range(0,salle.getNumberPlaceSalle()).forEach(i->{
+                        Place place = new Place();
+                        place.setNumberPlace(i+1);
+                        place.setSalle(salle);
+                iPlaceRepository.save(place);
+                    }
+            );
+        });
+    }
+    @Override
+    public void initSeances() {
+        DateFormat dateFormat=new SimpleDateFormat("HH:mm");
+
+        Stream.of("12:00","15:00","17:00","19:00","21:00").forEach(s->{
+            Seance seance=new Seance();
+            try {
+                seance.setTimeDebutSeance(dateFormat.parse(s));
+                iSeanceRepository.save(seance);
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void initCategories() {
+        Stream.of("Action","Drama","Fiction","Histoire","Horror","Documentary","Comedy","Romantic comedy","Action / Aventure","Comedy-drama").forEach(cat->{
+            Category category=new Category();
+            category.setNameCategory(cat);
+            iCategoryRepository.save(category);
+        });
+    }
+
+    @Override
+    public void initFilms() {
+        double[] duree=new double[]{1,1.5,2,2.5,3};
+        List<Category> categories=iCategoryRepository.findAll();
+        Stream.of("Game Of Thrones","Spider Man","Batman","Titanic","Cat Women","Super Man").forEach(nameFilm->{
+            Film  film =new Film();
+            film.setTitreFilm(nameFilm);
+            film.setDurationFilm(duree[(int)Math.random()*duree.length]);
+            film.setPhotoFilm(nameFilm.replaceAll(" ", "")+".jpg");
+            film.setCategory(categories.get(new Random().nextInt(categories.size())));
+            iFilmRepository.save(film);
+        });
+    }
+
+    @Override
+    @Transactional
+    public void initProjections() {
+        double[] prices=new double[]{50,60,70,80};
+        List<Film> films=iFilmRepository.findAll();
+
+        iVilleRepository.findAll().forEach(ville->{
+            for (Cinema cinema : ville.getCinemaSet()) {
+                cinema.getSalleSet().forEach(salle -> {
+                    //filmRepository.findAll().forEach(film->{
+                    int index = new Random().nextInt(films.size());
+                    Film film = films.get(index);
+                    iSeanceRepository.findAll().forEach(seance -> {
+                        ProjectionFilm projection = new ProjectionFilm();
+                        projection.setDateProjectionFilm(new Date());
+                        projection.setFilm(film);
+                        projection.setPriceProjectionFilm(prices[new Random().nextInt(prices.length)]);
+                        projection.setSalle(salle);
+                        projection.setSeance(seance);
+                        iProjectionFilmRepository.save(projection);
+                    });
+                });
+            }
+        });
+    }
+
+    @Override
+    public void initTickets() {
+        iProjectionFilmRepository.findAll().forEach(projection->{
+            projection.getSalle().getPlaceSet().forEach(place->{
+                Ticket ticket=new Ticket();
+                ticket.setPlace(place);
+                ticket.setProjectionFilm(projection);
+                ticket.setPriceTicket(projection.getPriceProjectionFilm());
+                ticket.setReservationTicket(false);
+                iTicketRepository.save(ticket);
+            });
+        });
+    }
+}
