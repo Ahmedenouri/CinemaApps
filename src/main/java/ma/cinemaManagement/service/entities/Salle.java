@@ -1,5 +1,6 @@
 package ma.cinemaManagement.service.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,8 +27,10 @@ public class Salle {
     private Cinema cinema;
 
     @OneToMany(mappedBy = "salle")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Collection<Place> places;
 
     @OneToMany(mappedBy = "salle")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Collection<ProjectionFilm> projectionFilms;
 }

@@ -1,5 +1,6 @@
 package ma.cinemaManagement.service.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class Cinema {
     private int numberSalleCinema;
 
     @OneToMany(mappedBy = "cinema")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Collection<Salle> salles;
     @ManyToOne
     @JoinColumn(name = "villeFk")

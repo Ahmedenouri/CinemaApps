@@ -18,7 +18,7 @@ public class Ticket {
     private String nameClientTicket;
     @Column(name = "priceTicket")
     private double priceTicket;
-    @Column(name = "codePaymentTicket",unique = true,nullable = true)
+    @Column(name = "codePaymentTicket")
     private Integer codePaymentTicket;
     @Column(name = "reservationTicket")
     private boolean reservationTicket;
