@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -31,7 +31,7 @@ public class ProjectionFilm {
     private Film film;
 
     @OneToMany(mappedBy = "projectionFilm")
-    private Set<Ticket> ticketSet;
+    private Collection<Ticket> tickets;
 
     @ManyToOne
     @JoinColumn(name = "seanceFk")

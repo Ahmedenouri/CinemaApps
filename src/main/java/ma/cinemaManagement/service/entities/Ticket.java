@@ -15,7 +15,7 @@ public class Ticket {
     @Column(name = "idTicket")
     private Long idTicket;
     @Column(name = "nameTicket",length = 30)
-    private String nameTicket;
+    private String nameClientTicket;
     @Column(name = "priceTicket")
     private double priceTicket;
     @Column(name = "codePaymentTicket",unique = true,nullable = true)

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.Collection;
 
 @Data
 @AllArgsConstructor
@@ -20,5 +20,5 @@ public class Category {
     private String nameCategory;
 
     @OneToMany(mappedBy = "category")
-    private Set<Film> filmSet;
+    private Collection<Film> films;
 }

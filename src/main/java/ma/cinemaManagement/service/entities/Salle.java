@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.Collection;
 
 @Data
 @AllArgsConstructor
@@ -26,8 +26,8 @@ public class Salle {
     private Cinema cinema;
 
     @OneToMany(mappedBy = "salle")
-    private Set<Place> placeSet;
+    private Collection<Place> places;
 
     @OneToMany(mappedBy = "salle")
-    private Set<ProjectionFilm> projectionFilmSet;
+    private Collection<ProjectionFilm> projectionFilms;
 }

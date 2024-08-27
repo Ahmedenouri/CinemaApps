@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
 import java.util.Set;
 
 @Data
@@ -30,7 +31,7 @@ public class Cinema {
     private int numberSalleCinema;
 
     @OneToMany(mappedBy = "cinema")
-    private Set<Salle> salleSet;
+    private Collection<Salle> salles;
     @ManyToOne
     @JoinColumn(name = "villeFk")
     private Ville ville;

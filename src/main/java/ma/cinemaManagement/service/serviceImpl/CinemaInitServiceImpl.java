@@ -73,7 +73,7 @@ public class CinemaInitServiceImpl implements ICinemaInitService {
 
     @Override
     public void initPlaces() {
-        iSalleRepository.findAll().stream().forEach(salle->{
+        iSalleRepository.findAll().forEach(salle->{
             IntStream.range(0,salle.getNumberPlaceSalle()).forEach(i->{
                         Place place = new Place();
                         place.setNumberPlace(i+1);
@@ -116,7 +116,7 @@ public class CinemaInitServiceImpl implements ICinemaInitService {
         Stream.of("Game Of Thrones","Spider Man","Batman","Titanic","Cat Women","Super Man").forEach(nameFilm->{
             Film  film =new Film();
             film.setTitreFilm(nameFilm);
-            film.setDurationFilm(duree[(int)Math.random()*duree.length]);
+            film.setDurationFilm(duree[(int) (Math.random() * duree.length)]);
             film.setPhotoFilm(nameFilm.replaceAll(" ", "")+".jpg");
             film.setCategory(categories.get(new Random().nextInt(categories.size())));
             iFilmRepository.save(film);
@@ -126,33 +126,30 @@ public class CinemaInitServiceImpl implements ICinemaInitService {
     @Override
     @Transactional
     public void initProjections() {
-        double[] prices=new double[]{50,60,70,80};
-        List<Film> films=iFilmRepository.findAll();
-
-        iVilleRepository.findAll().forEach(ville->{
-            for (Cinema cinema : ville.getCinemaSet()) {
-                cinema.getSalleSet().forEach(salle -> {
-                    //filmRepository.findAll().forEach(film->{
-                    int index = new Random().nextInt(films.size());
-                    Film film = films.get(index);
-                    iSeanceRepository.findAll().forEach(seance -> {
-                        ProjectionFilm projection = new ProjectionFilm();
-                        projection.setDateProjectionFilm(new Date());
-                        projection.setFilm(film);
-                        projection.setPriceProjectionFilm(prices[new Random().nextInt(prices.length)]);
-                        projection.setSalle(salle);
-                        projection.setSeance(seance);
-                        iProjectionFilmRepository.save(projection);
+        double[] prices = new double[] {30,40,50,60,70,80,90,100};
+        iVilleRepository.findAll().forEach(nameVille ->{
+            nameVille.getCinemas().forEach(nameCinema ->{
+                nameCinema.getSalles().forEach(nameSalle ->{
+                    iFilmRepository.findAll().forEach(nameFilm ->{
+                        iSeanceRepository.findAll().forEach( nameSeance ->{
+                            ProjectionFilm projectionFilm = new ProjectionFilm();
+                            projectionFilm.setDateProjectionFilm(new Date());
+                            projectionFilm.setFilm(nameFilm);
+                            projectionFilm.setPriceProjectionFilm(prices[new Random().nextInt(prices.length)]);
+                            projectionFilm.setSalle(nameSalle);
+                            projectionFilm.setSeance(nameSeance);
+                            iProjectionFilmRepository.save(projectionFilm);
+                        });
                     });
                 });
-            }
+            });
         });
     }
 
     @Override
     public void initTickets() {
         iProjectionFilmRepository.findAll().forEach(projection->{
-            projection.getSalle().getPlaceSet().forEach(place->{
+            projection.getSalle().getPlaces().forEach(place->{
                 Ticket ticket=new Ticket();
                 ticket.setPlace(place);
                 ticket.setProjectionFilm(projection);
