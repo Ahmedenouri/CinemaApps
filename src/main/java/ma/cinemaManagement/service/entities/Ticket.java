@@ -14,7 +14,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idTicket")
     private Long idTicket;
-    @Column(name = "nameTicket",length = 30)
+    @Column(name = "nameClientTicket",length = 30)
     private String nameClientTicket;
     @Column(name = "priceTicket")
     private double priceTicket;

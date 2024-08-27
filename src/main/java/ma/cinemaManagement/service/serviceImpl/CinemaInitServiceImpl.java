@@ -102,7 +102,7 @@ public class CinemaInitServiceImpl implements ICinemaInitService {
 
     @Override
     public void initCategories() {
-        Stream.of("Action","Drama","Fiction","Histoire","Horror","Documentary","Comedy","Romantic comedy","Action / Aventure","Comedy-drama").forEach(cat->{
+        Stream.of("Action","Drama","Fiction","Histoire","Horror","Documentary","Comedy","Romantic comedy","Comedy-drama").forEach(cat->{
             Category category=new Category();
             category.setNameCategory(cat);
             iCategoryRepository.save(category);
@@ -113,7 +113,7 @@ public class CinemaInitServiceImpl implements ICinemaInitService {
     public void initFilms() {
         double[] duree=new double[]{1,1.5,2,2.5,3};
         List<Category> categories=iCategoryRepository.findAll();
-        Stream.of("Game Of Thrones","Spider Man","Batman","Titanic","Cat Women","Super Man").forEach(nameFilm->{
+        Stream.of("Twisters","Pet Sematary","Game Of Thrones","Spider Man","Batman","Titanic","Sting","BreakingBad").forEach(nameFilm->{
             Film  film =new Film();
             film.setTitreFilm(nameFilm);
             film.setDurationFilm(duree[(int) (Math.random() * duree.length)]);
