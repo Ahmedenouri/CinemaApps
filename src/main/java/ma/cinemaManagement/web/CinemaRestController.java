@@ -7,7 +7,6 @@ import ma.cinemaManagement.repositories.IFilmRepository;
 import ma.cinemaManagement.repositories.ITicketRepository;
 import ma.cinemaManagement.service.entities.Film;
 import ma.cinemaManagement.service.entities.Ticket;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +21,13 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class CinemaRestController {
 
     private IFilmRepository iFilmRepository;
     private ITicketRepository iTicketRepository;
 
-    @GetMapping(path="/imageFilm/{id}",produces=MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(path="/imageFilms/{id}",produces=MediaType.IMAGE_JPEG_VALUE)
     public byte[] uploadImage(@PathVariable (name="id")Long id)  throws IOException{
         Film film=iFilmRepository.findById(id).get();
         String nameImage=film.getPhotoFilm();
@@ -37,8 +37,8 @@ public class CinemaRestController {
     }
     @PostMapping(path="/payerTickets")
     @Transactional
-    public List<Ticket> payerTickets(@RequestBody TicketBody ticketBody)
-    {  List<Ticket> listTickets= new ArrayList<Ticket>();
+    public List<Ticket> payerTickets(@RequestBody TicketBody ticketBody) {
+        List<Ticket> listTickets= new ArrayList<Ticket>();
         ticketBody.getListTickets().forEach(idTicket->{
             Ticket ticket=iTicketRepository.findById(idTicket).get();
             ticket.setNameClientTicket(ticketBody.getNameClient());
@@ -50,6 +50,7 @@ public class CinemaRestController {
         });
         return listTickets;
     }
+
 }
 @Data
 class TicketBody{

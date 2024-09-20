@@ -113,7 +113,7 @@ public class CinemaInitServiceImpl implements ICinemaInitService {
     public void initFilms() {
         double[] duree=new double[]{1,1.5,2,2.5,3};
         List<Category> categories=iCategoryRepository.findAll();
-        Stream.of("Twisters","Pet Sematary","Game Of Thrones","Spider Man","Batman","Titanic","Sting","BreakingBad","Split","PrisonBreak").forEach(nameFilm->{
+        Stream.of("Sector-36","Believer","Hounds-of-War","Speak-No-Evil","Persona","The-Threat-Next-Door","Blink-Twice").forEach(nameFilm->{
             Film  film =new Film();
             film.setTitreFilm(nameFilm);
             film.setDurationFilm(duree[(int) (Math.random() * duree.length)]);
@@ -127,20 +127,23 @@ public class CinemaInitServiceImpl implements ICinemaInitService {
     @Transactional
     public void initProjections() {
         double[] prices = new double[] {30,40,50,60,70,80,90,100};
+        List<Film> films = iFilmRepository.findAll();
         iVilleRepository.findAll().forEach(nameVille ->{
             nameVille.getCinemas().forEach(nameCinema ->{
                 nameCinema.getSalles().forEach(nameSalle ->{
-                    iFilmRepository.findAll().forEach(nameFilm ->{
+                    int index = new Random().nextInt(films.size());
+                    Film film = films.get(index);
+                    //iFilmRepository.findAll().forEach(nameFilm ->{
                         iSeanceRepository.findAll().forEach( nameSeance ->{
                             ProjectionFilm projectionFilm = new ProjectionFilm();
                             projectionFilm.setDateProjectionFilm(new Date());
-                            projectionFilm.setFilm(nameFilm);
+                            projectionFilm.setFilm(film);
                             projectionFilm.setPriceProjectionFilm(prices[new Random().nextInt(prices.length)]);
                             projectionFilm.setSalle(nameSalle);
                             projectionFilm.setSeance(nameSeance);
                             iProjectionFilmRepository.save(projectionFilm);
                         });
-                    });
+                    //});
                 });
             });
         });
